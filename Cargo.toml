@@ -1,0 +1,12 @@
+[package]
+name = "somelang-front"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+thiserror = "2.0.3"
+logos = "0.14.2"
+unescape = "0.1.0"
+clap = { version = "4.5.21", features = ["derive"] }
+winnow = { version = "0.6.20", features = ["simd"] }
+anyhow = "1.0.93"
