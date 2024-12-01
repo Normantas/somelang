@@ -43,11 +43,9 @@ pub enum Token {
 	})]
     Number(i64),
 
-    
     // Keywords
     #[token("fn")]
     Fn,
-
 
     // Symbols
     #[token("(")]
