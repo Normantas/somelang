@@ -22,15 +22,15 @@ use crate::lex::Token;
 #[derive(Debug, PartialEq)]
 pub enum Expr {
     Literal(Literal),
-    Binary(Literal, BinaryOp, Literal),
+    Binary(Literal, BinaryOp, Box<Expr>),
 }
 
 pub fn parse_expr(input: &mut &[Token]) -> PResult<Expr> {
-    if let Some((left_literal, binary_op, right_literal)) = opt(parse_binary_op).parse_next(input)? {
+    if let Some((left_literal, binary_op, right_expr)) = opt(parse_binary_op).parse_next(input)? {
         Ok(Expr::Binary(
             left_literal,
             binary_op,
-            right_literal,
+            Box::new(right_expr),
         ))
     } else if let Some(literal) = opt(parse_literal).parse_next(input)? {
         Ok(Expr::Literal(literal))
@@ -64,7 +64,7 @@ pub enum BinaryOp {
     Div,
 }
 
-fn parse_binary_op(input: &mut &[Token]) -> PResult<(Literal, BinaryOp, Literal)> {
+fn parse_binary_op(input: &mut &[Token]) -> PResult<(Literal, BinaryOp, Expr)> {
     let parse_binary = |input: &mut &[Token]| match any.parse_next(input)? {
         Token::Add => Ok(BinaryOp::Add),
         Token::Sub => Ok(BinaryOp::Sub),
@@ -73,5 +73,5 @@ fn parse_binary_op(input: &mut &[Token]) -> PResult<(Literal, BinaryOp, Literal)
         _ => Err(ErrMode::from_error_kind(input, ErrorKind::Verify)),
     };
 
-    (parse_literal, parse_binary, parse_literal).parse_next(input)
+    (parse_literal, parse_binary, parse_expr).parse_next(input)
 }
