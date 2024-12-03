@@ -1,4 +1,7 @@
-use function::Function;
+use winnow::combinator::repeat;
+use winnow::{PResult, Parser};
+
+use function::{parse_function, Function};
 use logos::Lexer;
 
 use crate::lex::{LexingError, Token};
@@ -7,15 +10,17 @@ mod expr;
 mod function;
 mod stmt;
 
+#[derive(Debug, PartialEq)]
 pub enum ModuleType {
     Bin,
     Lib,
 }
 
 /// AST (Abstract Syntax Tree) and metadata of a module.
+#[derive(Debug, PartialEq)]
 pub struct Module {
-    functions: Vec<Function>,
-    module_type: ModuleType,
+    pub functions: Vec<Function>,
+    pub module_type: ModuleType,
 }
 
 pub fn parse(token_stream: Lexer<'_, Token>) -> anyhow::Result<Module> {
@@ -26,10 +31,26 @@ pub fn parse(token_stream: Lexer<'_, Token>) -> anyhow::Result<Module> {
     }
 
     let mut slice: &[Token] = &tokens;
-    match function::parse_function(&mut slice) {
-        Ok(output) => println!("{output:?}"),
-        Err(err) => println!("{err}"),
+    match parse_module(&mut slice) {
+        Ok(module) => Ok(module),
+        Err(err) => Err(anyhow::anyhow!(err)),
     }
+}
 
-    todo!();
+pub fn parse_module(input: &mut &[Token]) -> PResult<Module> {
+    let functions: Vec<Function> = repeat(0..,
+        parse_function
+    ).parse_next(input)?;
+
+    // TODO: Change this
+    let module_type = if functions.iter().any(|f| f.name == "main") {
+        ModuleType::Bin
+    } else {
+        ModuleType::Lib
+    };
+
+    Ok(Module {
+        functions,
+        module_type,
+    })
 }

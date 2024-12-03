@@ -8,8 +8,8 @@ use super::stmt::{parse_stmt, Stmt};
 
 #[derive(Debug, PartialEq)]
 pub struct Function {
-    name: String,
-    body: Vec<Stmt>,
+    pub name: String,
+    pub body: Vec<Stmt>,
 }
 
 pub fn parse_function(input: &mut &[Token]) -> PResult<Function> {

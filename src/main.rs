@@ -28,7 +28,9 @@ fn main() -> anyhow::Result<()> {
                 fs::read_to_string(file).with_context(|| format!("while reading file {file:?}"))?;
 
             let tokens = lex::lex(&source);
-            parse::parse(tokens)?;
+            let ast = parse::parse(tokens)?;
+
+            println!("{ast:?}");
         }
     }
 
