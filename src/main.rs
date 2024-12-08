@@ -30,7 +30,7 @@ fn main() -> anyhow::Result<()> {
             let tokens = lex::lex(&source);
             let ast = parse::parse(tokens)?;
 
-            println!("{ast:?}");
+            println!("{ast:#?}");
         }
     }
 
