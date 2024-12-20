@@ -3,6 +3,7 @@ use std::{fs, path::PathBuf};
 use anyhow::Context;
 use clap::{Parser, Subcommand};
 
+mod interpreter;
 mod lex;
 mod parse;
 
@@ -31,6 +32,8 @@ fn main() -> anyhow::Result<()> {
             let ast = parse::parse(tokens)?;
 
             println!("{ast:#?}");
+
+            interpreter::interpet(ast)?;
         }
     }
 

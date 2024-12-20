@@ -1,10 +1,14 @@
 use winnow::combinator::repeat;
 use winnow::{PResult, Parser};
 
-use function::{parse_function, Function};
+use function::parse_function;
 use logos::Lexer;
 
 use crate::lex::{LexingError, Token};
+
+pub use expr::{BinaryOp, Expr, Literal};
+pub use function::Function;
+pub use stmt::Stmt;
 
 mod expr;
 mod function;
@@ -38,9 +42,7 @@ pub fn parse(token_stream: Lexer<'_, Token>) -> anyhow::Result<Module> {
 }
 
 pub fn parse_module(input: &mut &[Token]) -> PResult<Module> {
-    let functions: Vec<Function> = repeat(0..,
-        parse_function
-    ).parse_next(input)?;
+    let functions: Vec<Function> = repeat(0.., parse_function).parse_next(input)?;
 
     // TODO: Change this
     let module_type = if functions.iter().any(|f| f.name == "main") {

@@ -47,6 +47,9 @@ pub enum Token {
     #[token("fn")]
     Fn,
 
+    #[token("set")]
+    Set,
+
     // Symbols
     #[token("(")]
     LParen,
@@ -59,6 +62,9 @@ pub enum Token {
 
     #[token("}")]
     RBrace,
+
+    #[token("->")]
+    Arrow,
 
     #[token(",")]
     Comma,
