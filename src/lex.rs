@@ -43,6 +43,16 @@ pub enum Token {
 	})]
     Number(i64),
 
+    #[regex(r"true|false", priority = 5, callback = |lex| {
+		let string = lex.slice();
+		match string {
+            "true" => true,
+            "false" => false,
+            _ => unreachable!(),
+        }
+	})]
+    Bool(bool),
+
     // Keywords
     #[token("fn")]
     Fn,

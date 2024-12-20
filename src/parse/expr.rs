@@ -48,6 +48,7 @@ pub fn parse_literal(input: &mut &[Token]) -> PResult<Literal> {
     match any.parse_next(input)? {
         Token::Number(number) => Ok(Literal::Integer(number)),
         Token::String(string) => Ok(Literal::String(string)),
+        Token::Bool(bool) => Ok(Literal::Bool(bool)),
         Token::Ident(string) => Ok(Literal::Variable(string)),
         _ => Err(ErrMode::from_error_kind(input, ErrorKind::Fail)),
     }
