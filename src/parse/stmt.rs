@@ -1,4 +1,4 @@
-use winnow::combinator::{fail, opt, repeat_till};
+use winnow::combinator::{fail, opt, separated};
 use winnow::token::one_of;
 use winnow::{seq, PResult, Parser};
 
@@ -38,9 +38,8 @@ fn parse_function_call(input: &mut &[Token]) -> PResult<FunctionCall> {
             _ => unreachable!(),
         }),
         _: one_of(Token::LParen),
-        args: repeat_till(0.., parse_literal, one_of(Token::RParen)).map(|x| {
-            x.0
-        }),
+        args: separated(0.., parse_literal, one_of(Token::Comma)),
+        _: one_of(Token::RParen),
     }}
     .parse_next(input)
 }
